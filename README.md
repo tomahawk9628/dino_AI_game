@@ -4,12 +4,11 @@ The game itself was developed with the Pygame module
 ```bash
 pip install pygame
 ```
-You can also play it yourself by making the dino jump with the space bar.
 
 ## Agent ##
--The agent file would contain the following modules\
-    -game
-    -model
+The agent file would contain the following modules\
+    game\
+    model\
     Training:
         -state = get_state(game)
         -action = get_move(state)
