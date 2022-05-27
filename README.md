@@ -7,7 +7,7 @@ pip install pygame
 You can also play it yourself by making the dino jump with the space bar.
 
 ## Agent ##
--The agent file would contain the following modules
+-The agent file would contain the following modules\
     -game
     -model
     Training:
