@@ -1,4 +1,4 @@
-# Dino Game AI #
+# Dino Game AI(Work In Progress) #
 ## Game ##
 The game itself was developed with the Pygame module
 ```bash
