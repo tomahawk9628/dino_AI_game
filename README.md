@@ -3,7 +3,7 @@
 The game itself was developed with the Pygame module
 ```bash
 pip install pygame
-
+```
 ##Algorithm
 The NEAT algorithm has been used to make a game bot. The population size were sat to 100.
 
