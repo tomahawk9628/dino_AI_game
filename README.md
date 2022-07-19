@@ -10,9 +10,11 @@ The NEAT algorithm has been used to make a game bot. The population size were sa
 
 
 
-## Dependencies
+## Dependencies ##
 The game were created in pygame. And neat-python was used to run the neat algorithm.
-
+```bash
+pip install neat
+```
 
 
 ## Neural network
