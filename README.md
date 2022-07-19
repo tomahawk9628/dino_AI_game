@@ -1,18 +1,15 @@
 # Dino Game AI(Work In Progress) #
 ## Game ##
 The game itself was developed with the Pygame module
-```bash
-pip install pygame
-```
-##Algorithm
+
+## Algorithm ##
 The NEAT algorithm has been used to make a game bot. The population size were sat to 100.
-
-
 
 
 ## Dependencies ##
 The game were created in pygame. And neat-python was used to run the neat algorithm.
 ```bash
+pip install pygame
 pip install neat
 ```
 
