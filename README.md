@@ -14,7 +14,7 @@ Just download zip folder , unzip it and click on .exe file to play or observe. T
 1. Dino_GG_KB_HighDifficulty.exe: Keyboard controlled high difficulty (both cactus and ptera as obstacles) playable game.
 2. Dino_GG_KB_LowDifficulty.exe: Keyboard controlled low difficulty (only cactus as obstacle) playable game.
 3. Dino_GG_AI.exe: AI controlled non-playable game. It just shows Ai learning to play the game using NEAT algorithm.
-</br>
+
 ```bash
 NOTE: Do not delete any other files or folder from extracted directory as it contains game dependencies.
 ```
