@@ -22,7 +22,7 @@ There are 3 exe files in the directory:
 3. Dino_GG_AI.exe: AI controlled non-playable game. It just shows Ai learning to play the game using NEAT algorithm.
 
 ```bash
-NOTE: Do not delete/move any files or folder from extracted directory (zip folder) as it contains game dependencies.
+NOTE: Do not delete/move any other files or folder from extracted directory (zip folder) as it contains game dependencies.
 ```
 
 ## Dependencies ##
