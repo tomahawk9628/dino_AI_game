@@ -15,7 +15,7 @@ Installation Steps:
 2. Unzip it anywhere in your system.
 3. Move file "config-feedforward.txt" (either from extracted zip or this github) to "C:\Dino_GG\config-feedforward.txt".
 4. Click on .exe file to play or observe. 
-</br>
+
 There are 3 exe files in the directory:
 1. Dino_GG_KB_HighDifficulty.exe: Keyboard controlled high difficulty (both cactus and ptera as obstacles) playable game.
 2. Dino_GG_KB_LowDifficulty.exe: Keyboard controlled low difficulty (only cactus as obstacle) playable game.
