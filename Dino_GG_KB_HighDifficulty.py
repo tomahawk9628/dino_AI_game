@@ -4,7 +4,6 @@ import os
 import sys
 import pygame
 import random
-import neat
 from pygame import *
 
 pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay
@@ -13,7 +12,6 @@ pygame.init()
 scr_size = (width,height) = (600,150)
 FPS = 60
 gravity = 0.6
-gen = 0
 
 black = (0,0,0)
 white = (255,255,255)
@@ -23,7 +21,7 @@ high_score = 0
 
 screen = pygame.display.set_mode(scr_size)
 clock = pygame.time.Clock()
-pygame.display.set_caption("T-Rex Rush")
+pygame.display.set_caption("T-Rex Dino")
 
 jump_sound = pygame.mixer.Sound('sprites/jump.wav')
 die_sound = pygame.mixer.Sound('sprites/die.wav')
@@ -137,21 +135,6 @@ class Dino():
 
     def draw(self):
         screen.blit(self.image,self.rect)
-
-    def jump(self):
-        if self.rect.bottom == int(0.98*height):
-            self.isJumping = True
-            if pygame.mixer.get_init() != None:
-                jump_sound.play()
-            self.movement[1] = -1*self.jumpSpeed
-
-    def duck(self):
-        if not (self.isJumping and self.isDead):
-            self.isDucking = True
-
-    def unduck(self):
-            self.isDucking = False
-
 
     def checkbounds(self):
         if self.rect.bottom > int(0.98*height):
@@ -315,7 +298,7 @@ def introscreen():
     temp_dino.isBlinking = True
     gameStart = False
 
-    callout,callout_rect = load_image('call_out_ai.png',196,45,-1)
+    callout,callout_rect = load_image('call_out_kb.png',196,45,-1)
     callout_rect.left = width*0.05
     callout_rect.top = height*0.4
 
@@ -356,33 +339,17 @@ def introscreen():
         if temp_dino.isJumping == False and temp_dino.isBlinking == False:
             gameStart = True
 
-def gameplay(genomes, config):
-    print('running')
+def gameplay():
     global high_score
-    global gen
-    gen += 1
     gamespeed = 4
     startMenu = False
     gameOver = False
     gameQuit = False
+    playerDino = Dino(44,47)
     new_ground = Ground(-1*gamespeed)
     scb = Scoreboard()
     highsc = Scoreboard(width*0.78)
-    genBoard = Scoreboard(width*0.78)
     counter = 0
-
-
-    nets = []
-    ge = []
-    dinos = []
-
-    for _, genome in genomes:
-        genome.fitness = 0
-        net = neat.nn.FeedForwardNetwork.create(genome, config)
-        nets.append(net)
-        ge.append(genome)
-        dinos.append(Dino(44,47))
-
 
     cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
@@ -406,225 +373,138 @@ def gameplay(genomes, config):
     HI_rect.top = height*0.1
     HI_rect.left = width*0.73
 
-    while not gameOver:
-        if pygame.display.get_surface() == None:
-            print("Couldn't load display surface")
-            gameQuit = True
-            gameOver = True
-        else:
-            ##     KEYS
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    gameQuit = True
-                    gameOver = True
+    while not gameQuit:
+        while startMenu:
+            pass
+        while not gameOver:
+            if pygame.display.get_surface() == None:
+                print("Couldn't load display surface")
+                gameQuit = True
+                gameOver = True
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        gameQuit = True
+                        gameOver = True
 
-                    pygame.quit()
-                    quit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            if playerDino.rect.bottom == int(0.98*height):
+                                playerDino.isJumping = True
+                                if pygame.mixer.get_init() != None:
+                                    jump_sound.play()
+                                playerDino.movement[1] = -1*playerDino.jumpSpeed
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        dinos[0].jump()
+                        if event.key == pygame.K_DOWN:
+                            if not (playerDino.isJumping and playerDino.isDead):
+                                playerDino.isDucking = True
 
-                    if event.key == pygame.K_DOWN:
-                        dinos[0].duck()
-
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_DOWN:
-                        dinos[0].unduck()
-
-
-        ## Obs
-        nextCacti = None
-        cactiAfterThat = None
-        for c in cacti:
-            if (nextCacti == None):
-                nextCacti = c
-            elif (c.rect.left >= dinos[0].rect.left and c.rect.left < nextCacti.rect.left):
-                nextCacti = c
-
-            if(cactiAfterThat == None and nextCacti != None):
-                cactiAfterThat = c
-            elif (c.rect.left > nextCacti.rect.left and c.rect.left < cactiAfterThat.rect.left):
-                cactiAfterThat = c
-                if (cactiAfterThat.rect.left == nextCacti.rect.left):
-                    cactiAfterThat = None
-
-        for c in cacti:
-            c.movement[0] = -1*gamespeed
-            for dino in dinos:
-
-                if pygame.sprite.collide_mask(dino,c):
-                    dino.isDead = True
+                    if event.type == pygame.KEYUP:
+                        if event.key == pygame.K_DOWN:
+                            playerDino.isDucking = False
+            for c in cacti:
+                c.movement[0] = -1*gamespeed
+                if pygame.sprite.collide_mask(playerDino,c):
+                    playerDino.isDead = True
                     if pygame.mixer.get_init() != None:
                         die_sound.play()
 
-        nextPteras = None
-        pterasAfterThat = None
-        for p in pteras:
-            if (nextPteras == None):
-                nextPteras = p
-            elif (p.rect.left >= dinos[0].rect.left and p.rect.left < nextPteras.rect.left):
-                nextPteras = p
-
-            if(pterasAfterThat == None and nextPteras != None):
-                pterasAfterThat = p
-            elif (p.rect.left > nextPteras.rect.left and p.rect.left < pterasAfterThat.rect.left):
-                pterasAfterThat = p
-                if (pterasAfterThat.rect.left == nextPteras.rect.left):
-                    pterasAfterThat = None
-
-        nextOb = None
-        if (nextPteras == None and nextCacti == None):
-            nextOb = None
-        elif(nextPteras == None):
-            nextOb = nextCacti
-        elif(nextCacti == None):
-            nextOb = nextPteras
-        else:
-            if(nextPteras.rect.left <= nextCacti.rect.left):
-                nextOb = nextPteras
-            else:
-                nextOb = nextCacti
-
-
-        obAfterThat = None
-        if (pterasAfterThat == None and cactiAfterThat == None):
-            obAfterThat = None
-        elif(pterasAfterThat == None):
-            obAfterThat = cactiAfterThat
-        elif(cactiAfterThat == None):
-            obAfterThat = pterasAfterThat
-        else:
-            if(pterasAfterThat.rect.left <= cactiAfterThat.rect.left):
-                obAfterThat = pterasAfterThat
-            else:
-                obAfterThat = cactiAfterThat
-
-        for p in pteras:
-            p.movement[0] = -1*gamespeed
-            for dino in dinos:
-
-                if pygame.sprite.collide_mask(dino,p):
-                    dino.isDead = True
+            for p in pteras:
+                p.movement[0] = -1*gamespeed
+                if pygame.sprite.collide_mask(playerDino,p):
+                    playerDino.isDead = True
                     if pygame.mixer.get_init() != None:
                         die_sound.play()
 
-        if len(cacti) < 2:
-            if len(cacti) == 0:
-                last_obstacle.empty()
-                last_obstacle.add(Cactus(gamespeed,40,40))
-            else:
-                for l in last_obstacle:
-                    if l.rect.right < width*0.7 and random.randrange(0,50) == 10:
-                        last_obstacle.empty()
-                        last_obstacle.add(Cactus(gamespeed, 40, 40))
-
-        if len(pteras) == 0 and random.randrange(0,200) == 10 and counter > 500:
-            for l in last_obstacle:
-                if l.rect.right < width*0.8:
+            if len(cacti) < 2:
+                if len(cacti) == 0:
                     last_obstacle.empty()
-                    last_obstacle.add(Ptera(gamespeed, 46, 40))
+                    last_obstacle.add(Cactus(gamespeed,40,40))
+                else:
+                    for l in last_obstacle:
+                        if l.rect.right < width*0.7 and random.randrange(0,50) == 10:
+                            last_obstacle.empty()
+                            last_obstacle.add(Cactus(gamespeed, 40, 40))
 
-        if len(clouds) < 5 and random.randrange(0,300) == 10:
-            Cloud(width,random.randrange(height/5,height/2))
+            if len(pteras) == 0 and random.randrange(0,200) == 10 and counter > 500:
+                for l in last_obstacle:
+                    if l.rect.right < width*0.8:
+                        last_obstacle.empty()
+                        last_obstacle.add(Ptera(gamespeed, 46, 40))
 
-        # if(nextOb != None):
-        #     if(nextOb.rect.bottom < 147):
-        #         print((dinos[0].rect.bottom, nextOb.rect.bottom))
+            if len(clouds) < 5 and random.randrange(0,300) == 10:
+                Cloud(width,random.randrange(height/5,height/2))
 
-        for x, dino in enumerate(dinos):
-            ge[x].fitness += 0.1
+            playerDino.update()
+            cacti.update()
+            pteras.update()
+            clouds.update()
+            new_ground.update()
+            scb.update(playerDino.score)
+            highsc.update(high_score)
 
-            nextObx = width
-            nextOby = height
-            if(nextOb != None):
-                nextObx = nextOb.rect.left
-                nextOby = nextOb.rect.bottom
+            if pygame.display.get_surface() != None:
+                screen.fill(background_col)
+                new_ground.draw()
+                clouds.draw(screen)
+                scb.draw()
+                if high_score != 0:
+                    highsc.draw()
+                    screen.blit(HI_image,HI_rect)
+                cacti.draw(screen)
+                pteras.draw(screen)
+                playerDino.draw()
 
-            afterNextObx = width
-            afterNextOby = height
-            if(obAfterThat != None):
-                afterNextObx = obAfterThat.rect.left
-                afterNextOby = obAfterThat.rect.bottom
+                pygame.display.update()
+            clock.tick(FPS)
 
-            output = nets[x].activate((dino.rect.bottom, nextOby, nextObx, afterNextOby, afterNextObx))
+            if playerDino.isDead:
+                gameOver = True
+                if playerDino.score > high_score:
+                    high_score = playerDino.score
 
-            if(output[0] > 0.5):
-                dino.jump()
+            if counter%700 == 699:
+                new_ground.speed -= 1
+                gamespeed += 1
 
-            if(output[1]>0.5):
-                dino.duck()
-            else:
-                dino.unduck()
+            counter = (counter + 1)
 
-            dino.update()
-
-        cacti.update()
-        pteras.update()
-        clouds.update()
-        new_ground.update()
-        scb.update(dinos[0].score)
-        genBoard.update(gen)
-        highsc.update(high_score)
-
-        if pygame.display.get_surface() != None:
-            screen.fill(background_col)
-            new_ground.draw()
-            clouds.draw(screen)
-            scb.draw()
-            genBoard.draw()
-            if high_score != 0:
-                highsc.draw()
-                screen.blit(HI_image,HI_rect)
-            cacti.draw(screen)
-            pteras.draw(screen)
-            for dino in dinos:
-                dino.draw()
-
-            pygame.display.update()
-        clock.tick(FPS)
-
-        for x, dino in enumerate(dinos):
-            if(dino.isDead):
-                dinos.pop(x)
-                ge.pop(x)
-                nets.pop(x)
-
-        if len(dinos) == 0:
+        if gameQuit:
             break
-            gameOver = True
 
+        while gameOver:
+            if pygame.display.get_surface() == None:
+                print("Couldn't load display surface")
+                gameQuit = True
+                gameOver = False
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        gameQuit = True
+                        gameOver = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            gameQuit = True
+                            gameOver = False
 
-        if counter%700 == 699:
-            new_ground.speed -= 1
-            gamespeed += 1
+                        if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                            gameOver = False
+                            gameplay()
+            highsc.update(high_score)
+            if pygame.display.get_surface() != None:
+                disp_gameOver_msg(retbutton_image,gameover_image)
+                if high_score != 0:
+                    highsc.draw()
+                    screen.blit(HI_image,HI_rect)
+                pygame.display.update()
+            clock.tick(FPS)
 
-        counter = (counter + 1)
+    pygame.quit()
+    quit()
 
+def main():
+    isGameQuit = introscreen()
+    if not isGameQuit:
+        gameplay()
 
-
-# gameplay()
-
-def run(config_file):
-    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                         config_file)
-
-    # Create the population, which is the top-level object for a NEAT run.
-    p = neat.Population(config)
-
-    # Add a stdout reporter to show progress in the terminal.
-    p.add_reporter(neat.StdOutReporter(True))
-    stats = neat.StatisticsReporter()
-    p.add_reporter(stats)
-    #p.add_reporter(neat.Checkpointer(5))
-
-    # Run for up to 50 generations.
-    winner = p.run(gameplay, 50)
-    print('\nBest genome:\n{!s}'.format(winner))
-
-
-if __name__ == '__main__':
-    local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-feedforward.txt')
-    run(config_path)
+main()
