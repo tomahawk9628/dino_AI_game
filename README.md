@@ -1,10 +1,16 @@
-# Dino Game AI(Work In Progress) #
+# Dino Game AI #
 ## Game ##
 The game itself was developed with the Pygame module
 
 ## Algorithm ##
 The NEAT algorithm has been used to make a game bot. The population size were sat to 100.
 
+## Executables ##
+Executable files for the various games versions are available on Google Drive: 
+</br>
+https://drive.google.com/drive/folders/1Ja0M3glcI24QX3gdBDFocFeqnV16XQ_L?usp=sharing
+</br>
+Just download zip folder , unzip it and click on .exe file to play or observe.
 
 ## Dependencies ##
 The game were created in pygame. And neat-python was used to run the neat algorithm.
