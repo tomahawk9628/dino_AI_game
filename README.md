@@ -10,7 +10,13 @@ Executable files for the various games versions are available on Google Drive:
 </br>
 https://drive.google.com/drive/folders/1Ja0M3glcI24QX3gdBDFocFeqnV16XQ_L?usp=sharing
 </br>
-Just download zip folder , unzip it and click on .exe file to play or observe. There are 3 exe files in the directory:
+Installation Steps: 
+1. Just download zip folder (DinoGG_KB_AI_game.zip).
+2. Unzip it anywhere in your system.
+3. Move file "config-feedforward.txt" (either from extracted zip or this github) to "C:\Dino_GG\config-feedforward.txt".
+4. Click on .exe file to play or observe. 
+</br>
+There are 3 exe files in the directory:
 1. Dino_GG_KB_HighDifficulty.exe: Keyboard controlled high difficulty (both cactus and ptera as obstacles) playable game.
 2. Dino_GG_KB_LowDifficulty.exe: Keyboard controlled low difficulty (only cactus as obstacle) playable game.
 3. Dino_GG_AI.exe: AI controlled non-playable game. It just shows Ai learning to play the game using NEAT algorithm.
